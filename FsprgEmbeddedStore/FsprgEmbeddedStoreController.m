@@ -55,7 +55,7 @@
 
 - (WebView *)webView
 {
-	return webView;
+	return [[webView retain] autorelease];
 }
 
 - (void)setWebView:(WebView *)aWebView
@@ -68,7 +68,8 @@
 		[webView setApplicationNameForUserAgent:nil];
 		[[NSNotificationCenter defaultCenter] removeObserver:self];
 		
-		webView = aWebView;
+		[webView release];
+		webView = [aWebView retain];
 		
 		if (webView) {
 			[webView setPostsFrameChangedNotifications:TRUE];
@@ -181,13 +182,14 @@
 
 - (NSString *)storeHost
 {
-	return storeHost;
+	return [[storeHost retain] autorelease];
 }
 
 - (void)setStoreHost:(NSString *)aHost
 {
 	if (storeHost != aHost) {
-		storeHost = aHost;
+		[storeHost release];
+		storeHost = [aHost retain];
 	}
 }
 
@@ -226,11 +228,13 @@
 
 - (NSMutableDictionary *)hostCertificates
 {
-	return hostCertificates;
+	return [[hostCertificates retain] autorelease];
 }
 - (void)setHostCertificates:(NSMutableDictionary *)anHostCertificates
 {
 	if (hostCertificates != anHostCertificates) {
+		[anHostCertificates retain];
+		[hostCertificates release];
 		hostCertificates = anHostCertificates;
 	}
 }
@@ -242,6 +246,13 @@
 {
     if ([[self delegate] respondsToSelector:@selector(webView:didStartProvisionalLoadForFrame:)]) {
         [[self delegate] webView:sender didStartProvisionalLoadForFrame:frame];
+    }
+}
+
+- (void)webView:(WebView *)sender didCommitLoadForFrame:(WebFrame *)frame;
+{
+    if ([[self delegate] respondsToSelector:@selector(webView:didCommitLoadForFrame:)]) {
+        [[self delegate] webView:sender didCommitLoadForFrame:frame];
     }
 }
 
@@ -311,7 +322,7 @@
 										 styleMask:(NSClosableWindowMask|NSResizableWindowMask)
 										 backing:NSBackingStoreBuffered
 										 defer:NO];
-	WebView *subWebView = [[WebView alloc] initWithFrame:NSMakeRect(0,0,0,0)];
+	WebView *subWebView = [[[WebView alloc] initWithFrame:NSMakeRect(0,0,0,0)] autorelease];
 	[window setReleasedWhenClosed:TRUE];
 	[window setContentView:subWebView];
 	[window makeKeyAndOrderFront:sender];
@@ -338,7 +349,7 @@
     CFIndex idx;
     for (idx = 0; idx < (CFIndex)count; idx++) {
         SecCertificateRef certificateRef = SecTrustGetCertificateAtIndex(trustRef, idx);
-        [certificates addObject:(__bridge id)certificateRef];
+        [certificates addObject:(id)certificateRef];
     }
 
     NSString *host = [[challenge protectionSpace] host];
@@ -355,6 +366,8 @@
 	[self setDelegate:nil];
 	[self setStoreHost:nil];
 	[self setHostCertificates:nil];
+
+	[super dealloc];
 }
 
 @end

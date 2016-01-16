@@ -13,7 +13,7 @@
 
 + (FsprgFileDownload *)fileDownloadWithDictionary:(NSDictionary *)aDictionary
 {
-	return [[FsprgFileDownload alloc] initWithDictionary:aDictionary];
+	return [[[FsprgFileDownload alloc] initWithDictionary:aDictionary] autorelease];
 }
 
 - (FsprgFileDownload *)initWithDictionary:(NSDictionary *)aDictionary
@@ -26,12 +26,13 @@
 }
 - (NSDictionary *)raw
 {
-    return raw;
+    return [[raw retain] autorelease]; 
 }
 - (void)setRaw:(NSDictionary *)aDictionary
 {
     if (raw != aDictionary) {
-        raw = aDictionary;
+        [raw release];
+        raw = [aDictionary retain];
     }
 }
 
@@ -49,6 +50,8 @@
 - (void)dealloc
 {
     [self setRaw:nil];
+	
+    [super dealloc];
 }
 
 @end

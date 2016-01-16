@@ -86,4 +86,6 @@ typedef enum {
  */
 - (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame;
 
+- (void)webView:(WebView *)sender didCommitLoadForFrame:(WebFrame *)frame;
+
 @end

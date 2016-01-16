@@ -29,7 +29,7 @@
 																	  error:nil];
 #endif
 	
-	return [[FsprgOrder alloc] initWithDictionary:aDict];
+	return [[[FsprgOrder alloc] initWithDictionary:aDict] autorelease];
 }
 
 - (FsprgOrder *)initWithDictionary:(NSDictionary *)aDictionary
@@ -42,12 +42,13 @@
 }									
 - (NSDictionary *)raw
 {
-    return raw;
+    return [[raw retain] autorelease]; 
 }
 - (void)setRaw:(NSDictionary *)aDictionary
 {
     if (raw != aDictionary) {
-        raw = aDictionary;
+        [raw release];
+        raw = [aDictionary retain];
     }
 }
 
@@ -130,6 +131,8 @@
 - (void)dealloc
 {
     [self setRaw:nil];
+	
+    [super dealloc];
 }
 
 @end

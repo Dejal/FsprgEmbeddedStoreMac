@@ -13,7 +13,7 @@
 
 + (FsprgOrderItem *)itemWithDictionary:(NSDictionary *)aDictionary
 {
-	return [[FsprgOrderItem alloc] initWithDictionary:aDictionary];
+	return [[[FsprgOrderItem alloc] initWithDictionary:aDictionary] autorelease];
 }
 
 - (FsprgOrderItem *)initWithDictionary:(NSDictionary *)aDictionary
@@ -26,13 +26,14 @@
 }
 - (NSDictionary *)raw
 {
-    return raw;
+    return [[raw retain] autorelease]; 
 }
 
 - (void)setRaw:(NSDictionary *)aDictionary
 {
     if (raw != aDictionary) {
-        raw = aDictionary;
+        [raw release];
+        raw = [aDictionary retain];
     }
 }
 
@@ -95,6 +96,8 @@
 - (void)dealloc
 {
     [self setRaw:nil];
+	
+    [super dealloc];
 }
 
 @end

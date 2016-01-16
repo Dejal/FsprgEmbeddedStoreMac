@@ -39,7 +39,7 @@ static NSMutableDictionary *keyPathsForValuesAffecting;
 
 + (void)initialize
 {
-	keyPathsForValuesAffecting = [NSMutableDictionary dictionaryWithCapacity:1];
+	keyPathsForValuesAffecting = [[NSMutableDictionary dictionaryWithCapacity:1] retain];
 	
 	NSSet *toURLSet = [NSSet setWithObjects:NSStringFromSelector(@selector(language)),
 											NSStringFromSelector(@selector(orderProcessType)), 
@@ -63,12 +63,12 @@ static NSMutableDictionary *keyPathsForValuesAffecting;
 + (FsprgStoreParameters *)parameters
 {
 	NSMutableDictionary *raw = [NSMutableDictionary dictionaryWithCapacity:15];
-	return [[FsprgStoreParameters alloc] initWithRaw:raw];
+	return [[[FsprgStoreParameters alloc] initWithRaw:raw] autorelease];
 }
 
 + (FsprgStoreParameters *)parametersWithRaw:(NSMutableDictionary *)aRaw
 {
-	return [[FsprgStoreParameters alloc] initWithRaw:aRaw];
+	return [[[FsprgStoreParameters alloc] initWithRaw:aRaw] autorelease];
 }
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
@@ -92,13 +92,14 @@ static NSMutableDictionary *keyPathsForValuesAffecting;
 
 - (NSMutableDictionary *)raw
 {
-    return raw;
+    return [[raw retain] autorelease]; 
 }
 
 - (void)setRaw:(NSMutableDictionary *)aRaw
 {
     if (raw != aRaw) {
-        raw = aRaw;
+        [raw release];
+        raw = [aRaw retain];
     }
 }
 
@@ -338,6 +339,8 @@ static NSMutableDictionary *keyPathsForValuesAffecting;
 - (void)dealloc
 {
     [self setRaw:nil];
+	
+    [super dealloc];
 }
 
 @end
